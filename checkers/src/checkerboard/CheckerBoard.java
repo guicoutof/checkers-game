@@ -87,8 +87,8 @@ public class CheckerBoard extends JPanel {
 	
 	
 	public CheckerHouse getHouseAt(int row, int col) {
-		if(houses.containsKey(row * cols + col)) {
-			return houses.get(row * cols + col);
+		if(houses.containsKey(rows - row - 1)  * cols + col)) {
+			return houses.get(rows - row - 1)  * cols + col);
 		}
 		else {
 			return null;
