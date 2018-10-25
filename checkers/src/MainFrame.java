@@ -61,24 +61,44 @@ public class MainFrame extends JFrame {
 		        abririnterface(receivePacket,clientSocket);
 		        }while(auxNick);
 				
+		        DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);      
+		        try {
+					clientSocket.receive(receivePacket);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		        abririnterface(receivePacket,clientSocket);
+		        
 			}
 		});
 	}
 
 	public static void abririnterface(DatagramPacket receivePacket,DatagramSocket clientSocket) {
 		String sentence = new String(receivePacket.getData());
-        byte[] receiveData = new byte[1024*1024];
+        byte[] receiveData = new byte[1024];
         
         switch(sentence.charAt(0)){
         case '1':
         	auxNick = false;
         	if(sentence.charAt(1) == '1') {
-        		System.out.println("Aguardando outro jogador");
+        		JOptionPane.showMessageDialog(null,"Aguardando outro jogador");
         	}
         	if(sentence.charAt(1) == '2'){
         		try {
-					MainFrame frame = new MainFrame();
-					frame.setVisible(true);
+					String nick[] = sentence.split("\n");
+					if(nick[1].equals(nickname)) {
+						MainFrame frame = new MainFrame(nick[1]+ " Pretas");
+						frame.setVisible(true);
+						JOptionPane.showMessageDialog(null,"Pedras Pretas");
+						JOptionPane.showMessageDialog(null,"Você começa!");
+					}
+					else if(nick[2].equals(nickname)) {
+						MainFrame frame = new MainFrame(nick[2]+ " Brancas");
+						frame.setVisible(true);
+						JOptionPane.showMessageDialog(null,"Pedras Brancas");
+						JOptionPane.showMessageDialog(null,"Aguarde a sua vez!");
+					}
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -98,10 +118,12 @@ public class MainFrame extends JFrame {
 	}
 	
 
-	public MainFrame() {
+	public MainFrame(String title) {
+		setTitle(title);
 		setSize(new Dimension(680, 520));
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 
 
 		CheckerBoard checkerBoard = new CheckerBoard(8, 8, 3);
