@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import checkerboard.CheckerBoard;
+import checkerboard.ClickListener;
 
 public class MainFrame extends JFrame {
 	static int port = 9999;
@@ -122,6 +123,7 @@ public class MainFrame extends JFrame {
 		setTitle(title);
 		setSize(new Dimension(680, 520));
 		setLocationRelativeTo(null);
+		getContentPane().addMouseListener(new ClickListener());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 
