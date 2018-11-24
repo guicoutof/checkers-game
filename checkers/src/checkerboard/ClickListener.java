@@ -8,11 +8,16 @@ public class ClickListener extends MouseAdapter {
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-//		if(auxClick == 0){
-//			CheckerHouse house = (CheckerHouse) e.getSource();
-//			if(house.getContentType() != 0)house.setSelectionMode(1);
-//		}
-		System.out.println(e.getX()+". "+e.getY());
+		if(auxClick == 0){
+			CheckerHouse house = (CheckerHouse) e.getSource();
+			if(house.getContentType() != 0) {
+				//if(house.getFgColor())
+				house.setSelectionMode(1);
+			}
+			
+			Move moveHouse = new Move(house);
+		}
+		//System.out.println(e.getX()+". "+e.getY());
 		
 	}
 }

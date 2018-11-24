@@ -20,6 +20,7 @@ public class MainFrame extends JFrame {
 	static int port = 9999;
     static boolean auxNick = true;
     static String nickname;
+    static int jogador;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -92,12 +93,14 @@ public class MainFrame extends JFrame {
 						frame.setVisible(true);
 						JOptionPane.showMessageDialog(null,"Pedras Pretas");
 						JOptionPane.showMessageDialog(null,"Você começa!");
+						jogador = 1;
 					}
 					else if(nick[2].equals(nickname)) {
 						MainFrame frame = new MainFrame(nick[2]+ " Brancas");
 						frame.setVisible(true);
 						JOptionPane.showMessageDialog(null,"Pedras Brancas");
 						JOptionPane.showMessageDialog(null,"Aguarde a sua vez!");
+						jogador = 2;
 					}
 					
 				} catch (Exception e) {
@@ -105,10 +108,13 @@ public class MainFrame extends JFrame {
 				}
         	}
         	break;
+        case '2'://jogadas
         	
+        	break;
         case '9'://erros
             if(sentence.charAt(1)==0){//erro no nick
-                JOptionPane.showMessageDialog(null,"Nick inválido ou já existente");
+                JOptionPane.showMessageDialog(null,"Nick invalido ou ja existente");
+                System.out.println("Nick invalido ou ja existente");
                 auxNick = true;
             }
             break;
@@ -123,13 +129,13 @@ public class MainFrame extends JFrame {
 		setTitle(title);
 		setSize(new Dimension(680, 520));
 		setLocationRelativeTo(null);
-		getContentPane().addMouseListener(new ClickListener());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 
-
 		CheckerBoard checkerBoard = new CheckerBoard(8, 8, 3);
+		checkerBoard.setAdversario(jogador);
 		getContentPane().add(checkerBoard, BorderLayout.CENTER);
+		
 	}
 
 }

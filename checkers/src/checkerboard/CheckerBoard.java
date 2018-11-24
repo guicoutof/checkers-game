@@ -20,6 +20,13 @@ public class CheckerBoard extends JPanel {
 	private Color selectionColor;
 	
 	
+	public void setAdversario(int player) {
+		if(player == 2) {
+			playerColor = Color.LIGHT_GRAY;
+			oponentColor = Color.DARK_GRAY;
+		}
+	}
+	
 	
 	public CheckerBoard(int rows, int cols, int rowsPieces) {
 		this.rows = rows;
@@ -49,7 +56,7 @@ public class CheckerBoard extends JPanel {
 		for(int r = 0; r < rows; r++) {
 			for(int c = 0; c < cols; c++) {
 				CheckerHouse house = new CheckerHouse(rows - r - 1, c);				
-				
+				house.addMouseListener(new ClickListener());
 				if((r + c) % 2 == 0) {
 					house.setBgColor(blackHouseColor);
 					if(r < rowsPieces) {
