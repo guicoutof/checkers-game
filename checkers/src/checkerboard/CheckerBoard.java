@@ -20,7 +20,7 @@ public class CheckerBoard extends JPanel {
 	private Color selectionColor;
 	
 	
-	public void setAdversario(int player) {
+	public void setPlayer2(int player) {
 		if(player == 2) {
 			playerColor = Color.LIGHT_GRAY;
 			oponentColor = Color.DARK_GRAY;

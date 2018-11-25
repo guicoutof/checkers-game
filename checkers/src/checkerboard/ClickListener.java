@@ -15,6 +15,7 @@ public class ClickListener extends MouseAdapter {
 				house.setSelectionMode(1);
 			}
 			
+			//CheckerBoard checkboard = (CheckerBoard)e.getSource();
 			Move moveHouse = new Move(house);
 		}
 		//System.out.println(e.getX()+". "+e.getY());

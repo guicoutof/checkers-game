@@ -133,7 +133,7 @@ public class MainFrame extends JFrame {
 		
 
 		CheckerBoard checkerBoard = new CheckerBoard(8, 8, 3);
-		checkerBoard.setAdversario(jogador);
+		checkerBoard.setPlayer2(jogador);
 		getContentPane().add(checkerBoard, BorderLayout.CENTER);
 		
 	}
