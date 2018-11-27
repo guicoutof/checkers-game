@@ -89,18 +89,20 @@ public class MainFrame extends JFrame {
         		try {
 					String nick[] = sentence.split("\n");
 					if(nick[1].equals(nickname)) {
-						MainFrame frame = new MainFrame(nick[1]+ " Pretas");
+						jogador = 1;
+						MainFrame frame = new MainFrame(nick[1]+ " Pretas",jogador);
 						frame.setVisible(true);
 						JOptionPane.showMessageDialog(null,"Pedras Pretas");
 						JOptionPane.showMessageDialog(null,"Você começa!");
-						jogador = 1;
+						
 					}
 					else if(nick[2].equals(nickname)) {
-						MainFrame frame = new MainFrame(nick[2]+ " Brancas");
+						jogador = 2;
+						MainFrame frame = new MainFrame(nick[2]+ " Brancas",jogador);
 						frame.setVisible(true);
 						JOptionPane.showMessageDialog(null,"Pedras Brancas");
 						JOptionPane.showMessageDialog(null,"Aguarde a sua vez!");
-						jogador = 2;
+						
 					}
 					
 				} catch (Exception e) {
@@ -125,7 +127,7 @@ public class MainFrame extends JFrame {
 	}
 	
 
-	public MainFrame(String title) {
+	public MainFrame(String title,int jogador) {
 		setTitle(title);
 		setSize(new Dimension(680, 520));
 		setLocationRelativeTo(null);
