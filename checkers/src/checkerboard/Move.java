@@ -13,116 +13,191 @@ public class Move {
 		this.checkboard = checkboard;
 	}
 	
-	public void exibirMovimento() {
-		if(auxClick==0) {	
+	public int exibirMovimento() {
 			int row, col;
 			CheckerHouse visinho;
 			if(house.getContentType()==1) {//peao
 				if(house.getFgColor()==Color.DARK_GRAY) {//preto
 					row = house.getRow();
 					col = house.getCol();
-					if(checkboard.getHouseAt(row-1, col-1)!=null && ((col-1)>=0 && (row-1>=0))){//primeira casa a diagonal esquerda valida
-						if(checkboard.getHouseAt(row-1, col+1)!=null && ((col+1)<=7 && (row-1>=0))){//casa a diagonal direita valida
-							if(checkboard.getHouseAt(row-2, col-2)!=null && ((col-2)>=0 && (row-2>=0))) {//segunda casa a esquerda valida
-								if(checkboard.getHouseAt(row-2, col+2)!=null && ((col+2)<=7 && (row-2>=0))){//segunda casa a direita valida
-									if((visinho=checkboard.getHouseAt(row-1, col-1)).getContentType()!=0 && (visinho=checkboard.getHouseAt(row-2, col-2)).getContentType()==0){//verificacao de condicao de comida
-										if((visinho=checkboard.getHouseAt(row-1, col+1)).getContentType()!=0 && (visinho=checkboard.getHouseAt(row-2, col+2)).getContentType()==0){//verificacao de escolha
-											visinho.setSelectionMode(2);
-											visinho = checkboard.getHouseAt(row-2, col-2);
-											visinho.setSelectionMode(2);
-											auxClick = 2;//2 para realizar escolher um movimento de comida
-											antigaPosicao = house;
+					if(buscarCasa(row-1,col-1)!=null && verificarCasa(row-1,col-1)){//primeira casa a diagonal esquerda valida
+						if(buscarCasa(row-1,col+1)!=null && verificarCasa(row-1,col+1)){//primeira casa a diagonal direita valida
+							if(buscarCasa(row-2,col-2)!=null && verificarCasa(row-2,col-2)) {//segunda casa a esquerda valida
+								if(buscarCasa(row-2,col+2)!=null && verificarCasa(row-2,col+2)){//segunda casa a direita valida
+									if((buscarCasa(row-1,col-1)).getContentType()!=0 && (buscarCasa(row-1,col-1)).getFgColor()==checkboard.getOponentColor() && (buscarCasa(row-2,col-2)).getContentType()==0){//verificacao de condicao de comida
+										if((buscarCasa(row-1,col+1)).getContentType()!=0 && (buscarCasa(row-1,col+1)).getFgColor()==checkboard.getOponentColor() && (buscarCasa(row-2,col+2)).getContentType()==0){//verificacao de escolha
+											selecionarComerDoisVisinhosCima(house);
+											return 2;//2 para realizar escolher um movimento de comida
 										}else comerEsqCima(house);
-									}else if((visinho=checkboard.getHouseAt(row-1, col+1)).getContentType()!=0 && (visinho=checkboard.getHouseAt(row-2, col+2)).getContentType()==0)
+									}else if((buscarCasa(row-1,col+1)).getContentType()!=0 && (buscarCasa(row-1,col+1)).getFgColor()==checkboard.getOponentColor() && (buscarCasa(row-2,col+2)).getContentType()==0)
 											comerDirCima(house);
-								}else if((visinho=checkboard.getHouseAt(row-1, col-1)).getContentType()!=0 && (visinho=checkboard.getHouseAt(row-2, col-2)).getContentType()==0)
+										  else selecionarDoisVisinhosCima(house);
+								}else if((buscarCasa(row-1,col-1)).getContentType()!=0 && (buscarCasa(row-1,col-1)).getFgColor()==checkboard.getOponentColor() && (buscarCasa(row-2,col-2)).getContentType()==0)
 										comerEsqCima(house);
-							}else if(checkboard.getHouseAt(row-2, col+2)!=null && ((col+2)<=7 && (row-2>=0)))
-									if((visinho=checkboard.getHouseAt(row-1, col+1)).getContentType()!=0 && (visinho=checkboard.getHouseAt(row-2, col+2)).getContentType()==0)
+									  else selecionarEsqCima(house);
+							}else if(buscarCasa(row-2,col+2)!=null && verificarCasa(row-2,col+2)){
+									if((buscarCasa(row-1,col+1)).getContentType()!=0 && (buscarCasa(row-1,col+1)).getFgColor()==checkboard.getOponentColor() && (buscarCasa(row-2,col+2)).getContentType()==0)
 										comerDirCima(house);
-						}else {//andar esquerda ou direita
-							if((visinho=checkboard.getHouseAt(row-1, col-1)).getContentType()==0)
-								if((visinho=checkboard.getHouseAt(row-1, col+1)).getContentType()!=0) {
-									visinho.setSelectionMode(2);
-									visinho = checkboard.getHouseAt(row-1, col-1);
-									visinho.setSelectionMode(2);
-									auxClick = 1;//1 para realizar um movimento de andar normalmente
-									antigaPosicao = house;
+									else {
+										if((buscarCasa(row-1,col+1)).getContentType()==0 && buscarCasa(row-1,col+1).getContentType()==0)
+												selecionarDoisVisinhosCima(house);
+										else if((buscarCasa(row-1,col+1)).getContentType()==0)
+											selecionarDirCima(house);
+										else if((buscarCasa(row-1,col-1)).getContentType()==0)
+											selecionarEsqCima(house);
+									}
 								}else {
-									visinho.setSelectionMode(2);
-									auxClick = 1;
-									antigaPosicao = house;
+									if((buscarCasa(row-1,col+1)).getContentType()==0 && buscarCasa(row-1,col+1).getContentType()==0)
+											selecionarDoisVisinhosCima(house);
+									else if((buscarCasa(row-1,col+1)).getContentType()==0)
+										selecionarDirCima(house);
+									else if((buscarCasa(row-1,col-1)).getContentType()==0)
+										selecionarEsqCima(house);
 								}
-							else if((visinho=checkboard.getHouseAt(row-1, col+1)).getContentType()!=0) {
-								visinho.setSelectionMode(2);
-								auxClick = 1;
-								antigaPosicao = house;
-							}
+						}else {//andar esquerda so
+							if(buscarCasa(row-2,col-2)!=null && verificarCasa(row-2,col-2)) {
+								if((buscarCasa(row-1,col-1)).getContentType()!=0 && (buscarCasa(row-1,col-1)).getFgColor()==checkboard.getOponentColor() && (buscarCasa(row-2,col-2)).getContentType()==0)
+									comerEsqCima(house);
+								else if(buscarCasa(row-1,col-1).getContentType()==0)
+									selecionarEsqCima(house);
+							}else if(buscarCasa(row-1,col-1).getContentType()==0)
+								selecionarEsqCima(house);
 						}
-					}else {
-						if((visinho=checkboard.getHouseAt(row-1, col-1)).getContentType()==0) {
-							visinho.setSelectionMode(2);
-							auxClick = 1;
-							antigaPosicao = house;
-						}
+					}else {//andar direita so
+						if(buscarCasa(row-1,col+1)!=null && verificarCasa(row-1,col+1)) {
+							if((buscarCasa(row-1,col+1)).getContentType()!=0 && (buscarCasa(row-1,col+1)).getFgColor()==checkboard.getOponentColor() && (buscarCasa(row-2,col+2)).getContentType()==0)
+								comerDirCima(house);
+							else if((buscarCasa(row-1,col+1)).getContentType()==0)
+									selecionarDirCima(house);
+						}else if((buscarCasa(row-1,col+1)).getContentType()==0)
+							selecionarDirCima(house);
 					}
 					
 				}else if(house.getFgColor()==Color.LIGHT_GRAY) {//branco
 					row = house.getRow();
 					col = house.getCol();
-					if(checkboard.getHouseAt(row+1, col-1)!=null && ((col-1)>=0 && (row+1<=7))){//primeira casa a diagonal esquerda valida
-						if(checkboard.getHouseAt(row+1, col+1)!=null && ((col+1)<=7 && (row+1<=7))){//casa a diagonal direita valida
-							if(checkboard.getHouseAt(row+2, col-2)!=null && ((col-2)>=0 && (row+2<=7))) {//segunda casa a esquerda valida
-								if(checkboard.getHouseAt(row+2, col+2)!=null && ((col+2)<=7 && (row+2<=7))){//segunda casa a direita valida
-									if((visinho=checkboard.getHouseAt(row+1, col-1)).getContentType()!=0 && (visinho=checkboard.getHouseAt(row+2, col-2)).getContentType()==0){//verificacao de condicao de comida
-										if((visinho=checkboard.getHouseAt(row+1, col+1)).getContentType()!=0 && (visinho=checkboard.getHouseAt(row+2, col+2)).getContentType()==0){//verificacao de escolha
-											visinho.setSelectionMode(2);
-											visinho = checkboard.getHouseAt(row+2, col-2);
-											visinho.setSelectionMode(2);
-											auxClick = 2;//2 para realizar escolher um movimento de comida
-											antigaPosicao = house;
-										}else comerEsqBaixo(house);
-									}else if((visinho=checkboard.getHouseAt(row+1, col+1)).getContentType()!=0 && (visinho=checkboard.getHouseAt(row+2, col+2)).getContentType()==0)
-											comerDirBaixo(house);
-								}else if((visinho=checkboard.getHouseAt(row+1, col-1)).getContentType()!=0 && (visinho=checkboard.getHouseAt(row-2, col-2)).getContentType()==0)
-										comerEsqBaixo(house);
-							}else if(checkboard.getHouseAt(row+2, col+2)!=null && ((col+2)<=7 && (row+2<=7)))
-									if((visinho=checkboard.getHouseAt(row+1, col+1)).getContentType()!=0 && (visinho=checkboard.getHouseAt(row+2, col+2)).getContentType()==0)
-										comerDirBaixo(house);
-						}else {//andar esquerda ou direita
-							if((visinho=checkboard.getHouseAt(row+1, col-1)).getContentType()==0)
-								if((visinho=checkboard.getHouseAt(row+1, col+1)).getContentType()!=0){
-									visinho.setSelectionMode(2);
-									visinho = checkboard.getHouseAt(row-1, col-1);
-									visinho.setSelectionMode(2);
-									auxClick = 1;//1 para realizar um movimento de andar normalmente
-									antigaPosicao = house;
-								}else {
-									visinho.setSelectionMode(2);
-									auxClick = 1;
-									antigaPosicao = house;
-								}
-							else if((visinho=checkboard.getHouseAt(row+1, col+1)).getContentType()!=0){
-								visinho.setSelectionMode(2);
-								auxClick = 1;
-								antigaPosicao = house;
-							}
-						}
-					}else {
-						if((visinho=checkboard.getHouseAt(row+1, col-1)).getContentType()==0){
-							visinho.setSelectionMode(2);
-							auxClick = 1;
-							antigaPosicao = house;
-						}
-					}
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
 				}
 			}else if(house.getContentType()==2) {//rainha
 				
 			}
-		}
+			return 0;
 	}
 	
-	public void comerEsqCima(CheckerHouse house) {
+	private boolean verificarCasa(int row,int col){
+		if((row<0 || row>7) && (col<0 || col>7))
+			return false;
+		return true;
+	}
+	
+	private CheckerHouse buscarCasa(int row,int col) {
+		if(verificarCasa(row,col)){
+			return checkboard.getHouseAt(row, col);
+		}
+		return null;
+	}
+	
+	private void selecionarComerDoisVisinhosCima(CheckerHouse house) {
+		int row = house.getRow();
+		int col = house.getCol();
+		antigaPosicao = house;
+		house = checkboard.getHouseAt(row-2, col+2);
+		if(house.getContentType()==0)
+		house.setSelectionMode(2);
+		house = checkboard.getHouseAt(row-2, col-2);
+		if(house.getContentType()==0)
+		house.setSelectionMode(2);
+	}
+	
+	private void selecionarComerDoisVisinhosBaixo(CheckerHouse house) {
+		int row = house.getRow();
+		int col = house.getCol();
+		antigaPosicao = house;
+		house = checkboard.getHouseAt(row+2, col+2);
+		if(house.getContentType()==0)
+		house.setSelectionMode(2);
+		house = checkboard.getHouseAt(row+2, col-2);
+		if(house.getContentType()==0)
+		house.setSelectionMode(2);
+	}
+	
+	private void selecionarDoisVisinhosCima(CheckerHouse house) {
+		int row = house.getRow();
+		int col = house.getCol();
+		antigaPosicao = house;
+		house = checkboard.getHouseAt(row-1, col+1);
+		if(house.getContentType()==0)
+		house.setSelectionMode(2);
+		house = checkboard.getHouseAt(row-1, col-1);
+		if(house.getContentType()==0)
+		house.setSelectionMode(2);
+	}
+	
+	private void selecionarDoisVisinhosBaixo(CheckerHouse house) {
+		int row = house.getRow();
+		int col = house.getCol();
+		antigaPosicao = house;
+		house = checkboard.getHouseAt(row+1, col+1);
+		if(house.getContentType()==0)
+		house.setSelectionMode(2);
+		house = checkboard.getHouseAt(row+1, col-1);
+		if(house.getContentType()==0)
+		house.setSelectionMode(2);
+	}
+	
+	private void selecionarEsqCima(CheckerHouse house) {
+		int row = house.getRow();
+		int col = house.getCol();
+		antigaPosicao = house;
+		house = checkboard.getHouseAt(row-1, col-1);
+		if(house.getContentType()==0)
+		house.setSelectionMode(2);
+	}
+	
+	private void selecionarDirCima(CheckerHouse house) {
+		int row = house.getRow();
+		int col = house.getCol();
+		antigaPosicao = house;
+		house = checkboard.getHouseAt(row-1, col+1);
+		if(house.getContentType()==0)
+		house.setSelectionMode(2);
+	}
+	
+	private void selecionarEsqBaixo(CheckerHouse house) {
+		int row = house.getRow();
+		int col = house.getCol();
+		antigaPosicao = house;
+		house = checkboard.getHouseAt(row+1, col-1);
+		if(house.getContentType()==0)
+		house.setSelectionMode(2);
+	}
+	
+	private void selecionarDirBaixo(CheckerHouse house) {
+		int row = house.getRow();
+		int col = house.getCol();
+		antigaPosicao = house;
+		house = checkboard.getHouseAt(row+1, col+1);
+		if(house.getContentType()==0)
+		house.setSelectionMode(2);
+	}
+	
+	
+	
+	private void comerEsqCima(CheckerHouse house) {
 		int row = house.getRow();
 		int col = house.getCol();
 		
@@ -130,12 +205,10 @@ public class Move {
 		house = checkboard.getHouseAt(row-1, col-1);
 		house.setContentType(0);
 		house = checkboard.getHouseAt(row-2, col-2);
-		house.setContentType(1);
-		
-		
+		house.setContentType(1);	
 	}
 	
-	public void comerDirCima(CheckerHouse house) {
+	private void comerDirCima(CheckerHouse house) {
 		int row = house.getRow();
 		int col = house.getCol();
 		
@@ -144,10 +217,9 @@ public class Move {
 		house.setContentType(0);
 		house = checkboard.getHouseAt(row-2, col+2);
 		house.setContentType(1);
-
 	}
 	
-	public void comerEsqBaixo(CheckerHouse house) {
+	private void comerEsqBaixo(CheckerHouse house) {
 		int row = house.getRow();
 		int col = house.getCol();
 		
@@ -156,10 +228,9 @@ public class Move {
 		house.setContentType(0);
 		house = checkboard.getHouseAt(row+2, col-2);
 		house.setContentType(1);
-		
 	}
 	
-	public void comerDirBaixo(CheckerHouse house) {
+	private void comerDirBaixo(CheckerHouse house) {
 		int row = house.getRow();
 		int col = house.getCol();
 		
@@ -168,7 +239,6 @@ public class Move {
 		house.setContentType(0);
 		house = checkboard.getHouseAt(row+2, col+2);
 		house.setContentType(1);
-		
 	}
 	
 	

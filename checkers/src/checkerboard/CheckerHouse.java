@@ -105,7 +105,8 @@ public class CheckerHouse extends JPanel{
 			drawSelectionRect(g2D);
 		}
 		else if(selectionMode == CheckerHouse.SELECTION_MODE_MOVE) {
-			g2D.setColor(selectionColor.brighter());
+			//g2D.setColor(selectionColor.brighter());
+			g2D.setColor(new Color(0, 0, 200));
 			drawSelectionRect(g2D);
 		}	
 

@@ -93,14 +93,24 @@ public class CheckerBoard extends JPanel {
 
 	
 	
+//	public CheckerHouse getHouseAt(int row, int col) {
+//		if(houses.containsKey((rows - row - 1)  * cols + col)) {
+//			return houses.get((rows - row - 1)  * cols + col);
+//		}
+//		else {
+//			return null;
+//		}
+//	}
+	
 	public CheckerHouse getHouseAt(int row, int col) {
-		if(houses.containsKey((rows - row - 1)  * cols + col)) {
-			return houses.get((rows - row - 1)  * cols + col);
+		if(houses.containsKey((cols*row) + col)){
+			return houses.get((cols*row) + col);
 		}
 		else {
 			return null;
 		}
 	}
+	
 
 
 	public int getRows() {
