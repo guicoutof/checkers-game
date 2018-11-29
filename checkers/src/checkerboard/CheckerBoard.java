@@ -18,12 +18,23 @@ public class CheckerBoard extends JPanel {
 	private Color playerColor;
 	private Color oponentColor;
 	private Color selectionColor;
+	private CheckerHouse anterior;
 	
 	
 	public void setPlayer2(int player) {
 		if(player == 2) {
 			playerColor = Color.LIGHT_GRAY;
 			oponentColor = Color.DARK_GRAY;
+		}
+	}
+	
+	public void clearSelecteds() {
+		CheckerHouse house;
+		for(int i=0;i<rows;i++) {
+			for(int j=0;j<cols;j++) {
+				house = getHouseAt(i, j);
+				if(house.getSelectionMode()!=0)house.setSelectionMode(0);
+			}
 		}
 	}
 	
@@ -171,4 +182,16 @@ public class CheckerBoard extends JPanel {
 	public void setOponentColor(Color oponentColor) {
 		this.oponentColor = oponentColor;
 	}
+	
+	public void setAnterior(CheckerHouse anterior) {
+		this.anterior = anterior;
+	}
+	
+	public CheckerHouse getAnterior() {
+		return anterior;
+	}
+	
+	
+	
+	
 }

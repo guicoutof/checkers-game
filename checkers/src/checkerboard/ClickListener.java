@@ -5,7 +5,7 @@ import java.awt.event.MouseEvent;
 
 public class ClickListener extends MouseAdapter {
 	private int auxClick = 0;
-	CheckerHouse anterior;
+	private CheckerHouse anterior;
 	@Override
 	public void mouseClicked(MouseEvent e) {
 
@@ -16,12 +16,22 @@ public class ClickListener extends MouseAdapter {
 			//System.out.println(row+" , "+col);
 			CheckerBoard checkboard = (CheckerBoard) house.getParent();
 			if(house.getContentType() != 0) {
+				checkboard.clearSelecteds();
 				if(house.getFgColor()==checkboard.getPlayerColor()) {
 					house.setSelectionMode(1);
+					checkboard.setAnterior(house);;
 					Move moveHouse = new Move(house,checkboard);
-					moveHouse.exibirMovimento();
-					anterior = house;
+					auxClick = moveHouse.exibirMovimento();
 				}
+			}else if(house.getContentType()==0 && house.getSelectionMode()==2) {
+				//if(auxClick==1) {
+					anterior = checkboard.getAnterior();
+					anterior.setContentType(0);
+					house.setContentType(1);
+					house.setFgColor(checkboard.getPlayerColor());
+					auxClick=0;
+					checkboard.clearSelecteds();
+				//}
 			}
 
 			
