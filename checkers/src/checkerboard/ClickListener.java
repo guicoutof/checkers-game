@@ -13,6 +13,7 @@ public class ClickListener extends MouseAdapter {
 		int row = house.getRow();
 		int col = house.getCol();
 		
+		//if(auxClick == 0) {
 		if(auxClick == 0 && checkboard.getTurno()==checkboard.getPlayerColor()){
 			//System.out.println(row+" , "+col);
 			

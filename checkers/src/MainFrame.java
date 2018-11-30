@@ -8,6 +8,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -171,7 +173,7 @@ class CheckersThread extends Thread{
     CheckerBoard checkerBoard;
     String nickname;
     int jogador;
-    int aux = jogador;
+    int aux;
 
 
 
@@ -180,6 +182,7 @@ class CheckersThread extends Thread{
         this.checkerBoard = checkerBoard;
         this.nickname = nickname;
         this.jogador = jogador;
+        this.aux = jogador;
     }
     
     
@@ -200,47 +203,48 @@ class CheckersThread extends Thread{
 				}
             	aux=0;
             	JOptionPane.showMessageDialog(null,"Seu turno!");
+
+            	JOptionPane.showMessageDialog(null,"Seu turno!");
                 checkerBoard.iniciarTurno();
                 
-                ByteArrayInputStream baos = new ByteArrayInputStream(receiveData);
+                receiveData = receivePacket.getData();
+                ByteArrayInputStream in = new ByteArrayInputStream(receiveData);
                 
-                try{
-                	ObjectInputStream oos = new ObjectInputStream(baos);
-                	checkerBoard.setHouses((Map<Integer, CheckerHouse> )oos.readObject());
-                }catch (Exception e) {
-					// TODO: handle exception
+				try {
+					ObjectInputStream is = new ObjectInputStream(in);
+					Map<Integer, CheckerHouse> houses = (Map<Integer, CheckerHouse>) is.readObject();
+	                checkerBoard.setHouses(houses);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
+                
             }
             
             
             if(checkerBoard.getFimTurno()==1) {
             	try {
-                	ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    	            ObjectOutputStream oos = new ObjectOutputStream(baos);
-    	            
-    	                oos.writeObject(checkerBoard.getHouses());
-    	                oos.flush();
-    	            	sendData = baos.toByteArray();
-    	            	DatagramPacket sendPacket = new DatagramPacket(sendData,sendData.length,InetAddress.getByName("localhost"),9999);
-    	            	clientSocket.send(sendPacket);
-    	            	
-    	            	clientSocket.receive(receivePacket);
-    	            	JOptionPane.showMessageDialog(null,"Seu turno!");
-                        checkerBoard.iniciarTurno();
-                        
-                        ByteArrayInputStream baosi = new ByteArrayInputStream(receiveData);
-                        
-                        try{
-                        	ObjectInputStream oosi = new ObjectInputStream(baosi);
-                        	checkerBoard.setHouses((Map<Integer, CheckerHouse> )oosi.readObject());
-                        }catch (Exception e) {
-        					// TODO: handle exception
-        				}
-                        
-                        
-                        
-                        
-                        
+            		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            		ObjectOutputStream os = new ObjectOutputStream(outputStream);
+            		os.writeObject(checkerBoard.getHouses());
+            		
+            		sendData = outputStream.toByteArray();
+	            	DatagramPacket sendPacket = new DatagramPacket(sendData,sendData.length,InetAddress.getByName("localhost"),9999);
+	            	clientSocket.send(sendPacket);
+	            	
+	            	clientSocket.receive(receivePacket);
+	            	JOptionPane.showMessageDialog(null,"Seu turno!");
+                    checkerBoard.iniciarTurno();
+                    
+                    receiveData = receivePacket.getData();
+                    ByteArrayInputStream in = new ByteArrayInputStream(receiveData);
+                    ObjectInputStream is = new ObjectInputStream(in);
+                    Map<Integer, CheckerHouse> houses = (Map<Integer, CheckerHouse>) is.readObject();
+                    checkerBoard.setHouses(houses);
+ 
     	        }catch (Exception e) {
     			// TODO: handle exception
     	        }
