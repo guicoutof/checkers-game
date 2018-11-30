@@ -110,7 +110,6 @@ public class MainFrame extends JFrame {
 						//CheckerBoard checkerboard = (CheckerBoard)frame.get;
 
 						Thread cThread = new CheckersThread(clientSocket,checkerboard,nickname,jogador);
-						cThread.run();
 						cThread.start();
 						
 
@@ -124,8 +123,9 @@ public class MainFrame extends JFrame {
 						
 						//CheckerBoard checkerboard = (CheckerBoard)frame.getComponent(1);
 						Thread cThread = new CheckersThread(clientSocket,checkerboard,nickname,jogador);
-						cThread.run();
 						cThread.start();
+						
+						
 					}
 					
 				} catch (Exception e) {
