@@ -1,6 +1,7 @@
 package checkerboard;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,17 +9,36 @@ import javax.swing.JPanel;
 
 
 
-public class CheckerBoard extends JPanel {
+public class CheckerBoard extends JPanel implements Serializable {
 	private int houseSide;
 	private int rows;
 	private int cols;
 	private Map<Integer, CheckerHouse> houses;
+	public Color getTurno() {
+		return turno;
+	}
+
+	public void setTurno(Color turno) {
+		this.turno = turno;
+	}
+
+	public int getFimTurno() {
+		return fimTurno;
+	}
+
+	public void setFimTurno(int fimTurno) {
+		this.fimTurno = fimTurno;
+	}
+
 	private Color blackHouseColor;
 	private Color whiteHouseColor;
 	private Color playerColor;
 	private Color oponentColor;
 	private Color selectionColor;
+	
 	private CheckerHouse anterior;
+	private Color turno = Color.DARK_GRAY;
+	private int fimTurno = 0;
 	
 	
 	public void setPlayer2(int player) {
@@ -37,6 +57,17 @@ public class CheckerBoard extends JPanel {
 			}
 		}
 	}
+	
+	public void finalizarTurno() {
+		turno = oponentColor;
+		fimTurno = 1;
+	}
+	
+	public void iniciarTurno() {
+		turno = playerColor;
+		fimTurno = 0;
+	}
+	
 	
 	
 	public CheckerBoard(int rows, int cols, int rowsPieces) {
@@ -189,6 +220,14 @@ public class CheckerBoard extends JPanel {
 	
 	public CheckerHouse getAnterior() {
 		return anterior;
+	}
+
+	public Map<Integer, CheckerHouse> getHouses() {
+		return houses;
+	}
+
+	public void setHouses(Map<Integer, CheckerHouse> houses) {
+		this.houses = houses;
 	}
 	
 	

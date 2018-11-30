@@ -8,13 +8,14 @@ public class ClickListener extends MouseAdapter {
 	private CheckerHouse anterior;
 	@Override
 	public void mouseClicked(MouseEvent e) {
-
-		if(auxClick == 0){
-			CheckerHouse house = (CheckerHouse) e.getSource();
-			int row = house.getRow();
-			int col = house.getCol();
+		CheckerHouse house = (CheckerHouse) e.getSource();
+		CheckerBoard checkboard = (CheckerBoard) house.getParent();
+		int row = house.getRow();
+		int col = house.getCol();
+		
+		if(auxClick == 0 && checkboard.getTurno()==checkboard.getPlayerColor()){
 			//System.out.println(row+" , "+col);
-			CheckerBoard checkboard = (CheckerBoard) house.getParent();
+			
 			if(house.getContentType() != 0) {
 				checkboard.clearSelecteds();
 				if(house.getFgColor()==checkboard.getPlayerColor()) {
@@ -31,6 +32,7 @@ public class ClickListener extends MouseAdapter {
 					house.setFgColor(checkboard.getPlayerColor());
 					auxClick=0;
 					checkboard.clearSelecteds();
+					checkboard.finalizarTurno();
 				//}
 			}
 
