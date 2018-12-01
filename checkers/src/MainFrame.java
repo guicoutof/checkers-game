@@ -229,9 +229,16 @@ class CheckersThread extends Thread{
             	try {
             		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             		ObjectOutputStream os = new ObjectOutputStream(outputStream);
-            		os.writeObject(checkerBoard.getHouses());
+            		Map<Integer, CheckerHouse> houses = checkerBoard.getHouses();
+            		//for(int i=0;i<houses.size();i++) {
+            		//	os.writeObject(houses.get(i));
+            		//}
+            		os.writeObject(houses);
+            		os.close();
             		
             		sendData = outputStream.toByteArray();
+            		System.out.printf ("As houses foram serializadas com %d bytes%n", sendData.length);
+            		
 	            	DatagramPacket sendPacket = new DatagramPacket(sendData,sendData.length,InetAddress.getByName("localhost"),9999);
 	            	clientSocket.send(sendPacket);
 	            	
@@ -242,9 +249,16 @@ class CheckersThread extends Thread{
                     receiveData = receivePacket.getData();
                     ByteArrayInputStream in = new ByteArrayInputStream(receiveData);
                     ObjectInputStream is = new ObjectInputStream(in);
-                    Map<Integer, CheckerHouse> houses = (Map<Integer, CheckerHouse>) is.readObject();
+                    houses = (Map<Integer, CheckerHouse>) is.readObject();
                     checkerBoard.setHouses(houses);
  
+                    if(checkerBoard.blackWinner()) {
+                    	if(jogador == 1)JOptionPane.showMessageDialog(null,"Parabens "+nickname+" Voce Ganhou !!!");
+                    	else JOptionPane.showMessageDialog(null,"Pedras Pretas Ganhou !");
+                    }else if(checkerBoard.whiteWinner()) {
+                    	if(jogador == 2)JOptionPane.showMessageDialog(null,"Parabens "+nickname+" Voce Ganhou !!!");
+                    	else JOptionPane.showMessageDialog(null,"Pedras Brancas Ganhou !");
+                    }
     	        }catch (Exception e) {
     			// TODO: handle exception
     	        }

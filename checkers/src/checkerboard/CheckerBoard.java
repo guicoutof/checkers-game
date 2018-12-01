@@ -69,6 +69,26 @@ public class CheckerBoard extends JPanel implements Serializable {
 	}
 	
 	
+	public boolean blackWinner() {
+		for(int i=0;i<rows;i++) {
+			for(int j=0;j<cols;j++) {
+				if(getHouseAt(i,j).getFgColor()==Color.LIGHT_GRAY)
+					return false;
+			}
+		}
+		return true;
+	}
+	
+	public boolean whiteWinner() {
+		for(int i=0;i<rows;i++) {
+			for(int j=0;j<cols;j++) {
+				if(getHouseAt(i,j).getFgColor()==Color.DARK_GRAY)
+					return false;
+			}
+		}
+		return true;
+	}
+	
 	
 	public CheckerBoard(int rows, int cols, int rowsPieces) {
 		this.rows = rows;
