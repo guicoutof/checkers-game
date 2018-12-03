@@ -2,6 +2,9 @@ package checkerboard;
 
 import java.awt.Color;
 
+/**
+ * Classe de movimentação de uma peça.
+ */
 public class Move {
 	private CheckerHouse house;
 	private CheckerBoard checkboard;
@@ -13,6 +16,10 @@ public class Move {
 		this.checkboard = checkboard;
 	}
 	
+	/**
+	 * A função exibiá ou realizará um movimento <br> de acordo com a peça e a vizinhança da casa escolhida <br> 
+	 * Para movimentação será necessario uma confirmação para qual casa andará <br> caso há possibilidade de pular pedras, a pedra do oponente será comida automaticamente.
+	 */
 	public int exibirMovimento() {
 			int row, col;
 			if(house.getContentType()==1) {//peao
@@ -139,12 +146,18 @@ public class Move {
 			return 0;
 	}
 	
+	/**
+	 * Verificação de casas possiveis.
+	 */
 	private boolean verificarCasa(int row,int col){
 		if((row<0 || row>7) || (col<0 || col>7))
 			return false;
 		return true;
 	}
 	
+	/**
+	 * Busca de uma casa no tabuleiro.
+	 */
 	private CheckerHouse buscarCasa(int row,int col) {
 		if(verificarCasa(row,col)){
 			return checkboard.getHouseAt(row, col);
@@ -152,6 +165,9 @@ public class Move {
 		return null;
 	}
 	
+	/**
+	 * Movimentações.
+	 */
 	private void selecionarComerDoisVisinhosCima(CheckerHouse house) {
 		int row = house.getRow();
 		int col = house.getCol();

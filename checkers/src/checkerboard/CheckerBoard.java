@@ -7,40 +7,31 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
+import sun.util.BuddhistCalendar;
 
 
-public class CheckerBoard extends JPanel implements Serializable {
-	private int houseSide;
-	private int rows;
-	private int cols;
+/**
+ * Tabuleiro.
+ */
+public class CheckerBoard extends JPanel{
+	transient private int houseSide;
+	transient private int rows;
+	transient private int cols;
 	private Map<Integer, CheckerHouse> houses;
-	public Color getTurno() {
-		return turno;
-	}
-
-	public void setTurno(Color turno) {
-		this.turno = turno;
-	}
-
-	public int getFimTurno() {
-		return fimTurno;
-	}
-
-	public void setFimTurno(int fimTurno) {
-		this.fimTurno = fimTurno;
-	}
-
-	private Color blackHouseColor;
-	private Color whiteHouseColor;
-	private Color playerColor;
-	private Color oponentColor;
-	private Color selectionColor;
+	transient private Color blackHouseColor;
+	transient private Color whiteHouseColor;
+	transient private Color playerColor;
+	transient private Color oponentColor;
+	transient private Color selectionColor;
 	
-	private CheckerHouse anterior;
-	private Color turno = Color.DARK_GRAY;
-	private int fimTurno = 0;
+	transient private CheckerHouse anterior;
+	transient private Color turno = Color.DARK_GRAY;
+	transient private int fimTurno = 0;
 	
-	
+	/**
+	 * Função que irá "inverter"o campo<br> o tabuleiro não será invertido,<br> somente quem é o jogador de determinada pedra e seu oponente.
+	 * @param player verifica se será necessário a inversão do lado.
+	 */
 	public void setPlayer2(int player) {
 		if(player == 2) {
 			playerColor = Color.LIGHT_GRAY;
@@ -48,6 +39,9 @@ public class CheckerBoard extends JPanel implements Serializable {
 		}
 	}
 	
+	/**
+	 *  Limpa as marcações das possiveis casas de movimentação em todo o tabuleiro.
+	 */
 	public void clearSelecteds() {
 		CheckerHouse house;
 		for(int i=0;i<rows;i++) {
@@ -58,17 +52,25 @@ public class CheckerBoard extends JPanel implements Serializable {
 		}
 	}
 	
+	/**
+	 * Funcao para auxiliar na Thread,<br> ao encerrar um turno a Thread irá enviar as casas ao oponente.
+	 */
 	public void finalizarTurno() {
 		turno = oponentColor;
 		fimTurno = 1;
 	}
 	
+	/**
+	 * Funcao para auxiliar na Thread,<br> ao iniciar um turno a Thread não exercerá funcão até que o turno seja finalizado.
+	 */
 	public void iniciarTurno() {
 		turno = playerColor;
 		fimTurno = 0;
 	}
 	
-	
+	/**
+	 * Verificação de vitoria do jogador 1.
+	 */
 	public boolean blackWinner() {
 		for(int i=0;i<rows;i++) {
 			for(int j=0;j<cols;j++) {
@@ -79,6 +81,9 @@ public class CheckerBoard extends JPanel implements Serializable {
 		return true;
 	}
 	
+	/**
+	 * Verificação de vitoria do jogador 2.
+	 */
 	public boolean whiteWinner() {
 		for(int i=0;i<rows;i++) {
 			for(int j=0;j<cols;j++) {
@@ -89,6 +94,15 @@ public class CheckerBoard extends JPanel implements Serializable {
 		return true;
 	}
 	
+	/**
+	 * Função para transformar a casa em rainha.
+	 */
+	public void verificarRainha(int row,int col) {
+		if(getHouseAt(row, col).getFgColor()==Color.DARK_GRAY && row == 0)
+			getHouseAt(row, col).setContentType(2);
+		else if(getHouseAt(row, col).getFgColor()==Color.LIGHT_GRAY && row == 7)
+			getHouseAt(row, col).setContentType(2);
+	}
 	
 	public CheckerBoard(int rows, int cols, int rowsPieces) {
 		this.rows = rows;
@@ -250,7 +264,22 @@ public class CheckerBoard extends JPanel implements Serializable {
 		this.houses = houses;
 	}
 	
-	
+	public Color getTurno() {
+		return turno;
+	}
+
+	public void setTurno(Color turno) {
+		this.turno = turno;
+	}
+
+	public int getFimTurno() {
+		return fimTurno;
+	}
+
+	public void setFimTurno(int fimTurno) {
+		this.fimTurno = fimTurno;
+	}
+
 	
 	
 }

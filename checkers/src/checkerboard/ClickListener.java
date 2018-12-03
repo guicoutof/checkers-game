@@ -7,6 +7,10 @@ public class ClickListener extends MouseAdapter {
 	private int auxClick = 0;
 	private CheckerHouse anterior;
 	@Override
+	
+	/**
+	 * Evento do click em uma casa.
+	 */
 	public void mouseClicked(MouseEvent e) {
 		CheckerHouse house = (CheckerHouse) e.getSource();
 		CheckerBoard checkboard = (CheckerBoard) house.getParent();
@@ -33,6 +37,7 @@ public class ClickListener extends MouseAdapter {
 					house.setFgColor(checkboard.getPlayerColor());
 					auxClick=0;
 					checkboard.clearSelecteds();
+					checkboard.verificarRainha(house.getRow(),house.getCol());
 					checkboard.finalizarTurno();
 				//}
 			}

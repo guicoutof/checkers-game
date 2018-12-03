@@ -15,12 +15,15 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
+import com.google.gson.Gson;
 
 import checkerboard.CheckerBoard;
 import checkerboard.CheckerHouse;
@@ -37,7 +40,7 @@ public class MainFrame extends JFrame {
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				DatagramSocket clientSocket = null; //não é criado uma conexão entre os socket por ser UDP, portanto Datagrama
+				DatagramSocket clientSocket = null;
 		        InetAddress IPAddress = null;
 				try {
 					clientSocket = new DatagramSocket();
@@ -86,7 +89,13 @@ public class MainFrame extends JFrame {
 			}
 		});
 	}
-
+	
+/***
+ * Funcao onde ser� realizado a analise do pacote recebido pelo servidor
+ * \
+ * @param receivePacket pacote UDP
+ * @param clientSocket Socket aberto
+ */
 	public static void abririnterface(DatagramPacket receivePacket,DatagramSocket clientSocket) {
 		String sentence = new String(receivePacket.getData());
         byte[] receiveData = new byte[1024];
@@ -168,6 +177,11 @@ public class MainFrame extends JFrame {
 
 }
 
+/***
+ * Thread de envio e recebimento das casas do tabuleiro
+ * @author Guilherme Couto
+ *
+ */
 class CheckersThread extends Thread{
     DatagramSocket clientSocket;
     CheckerBoard checkerBoard;
@@ -191,67 +205,102 @@ class CheckersThread extends Thread{
 
         while(true){
             byte[] receiveData = new byte[1024];
+            byte[] receiveData2 = new byte[1024];
+            byte[] receiveData3 = new byte[1024];
             byte[] sendData = new byte[1024];
+            byte[] sendData2 = new byte[1024];
+            byte[] sendData3 = new byte[1024];
             
             DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
             if(aux==2) {
             	try {
-					clientSocket.receive(receivePacket);
+            		Gson gson = new Gson();
+            		Map<Integer, CheckerHouse> houses;
+            		
+            		clientSocket.receive(receivePacket);
+            		String sentence = new String(receivePacket.getData());
+            		
+                    clientSocket.receive(receivePacket);
+                    String sentence2 = new String(receivePacket.getData());
+
+                    clientSocket.receive(receivePacket);
+                    String sentence3 = new String(receivePacket.getData());
+                    sentence = sentence.concat(sentence2);
+                    sentence = sentence.concat(sentence3);
+                    
+                    //houses = gson.fromJson(sentence,HashMap.class);
+                    CheckerBoard checkBoardAux = gson.fromJson(sentence,CheckerBoard.class);
+                    checkerBoard.setHouses(checkBoardAux.getHouses());
+                    checkerBoard.repaint();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
             	aux=0;
-            	JOptionPane.showMessageDialog(null,"Seu turno!");
 
             	JOptionPane.showMessageDialog(null,"Seu turno!");
                 checkerBoard.iniciarTurno();
-                
-                receiveData = receivePacket.getData();
-                ByteArrayInputStream in = new ByteArrayInputStream(receiveData);
-                
-				try {
-					ObjectInputStream is = new ObjectInputStream(in);
-					Map<Integer, CheckerHouse> houses = (Map<Integer, CheckerHouse>) is.readObject();
-	                checkerBoard.setHouses(houses);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
                 
             }
             
             
             if(checkerBoard.getFimTurno()==1) {
             	try {
-            		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            		ObjectOutputStream os = new ObjectOutputStream(outputStream);
-            		Map<Integer, CheckerHouse> houses = checkerBoard.getHouses();
-            		//for(int i=0;i<houses.size();i++) {
-            		//	os.writeObject(houses.get(i));
-            		//}
-            		os.writeObject(houses);
-            		os.close();
+//            		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//            		ObjectOutputStream os = new ObjectOutputStream(outputStream);
+
+//            		//for(int i=0;i<houses.size();i++) {
+//            		//	os.writeObject(houses.get(i));
+//            		//}
             		
-            		sendData = outputStream.toByteArray();
+            		Map<Integer, CheckerHouse> houses = checkerBoard.getHouses();         		
+            		Gson gson = new Gson();
+            		String json = gson.toJson(checkerBoard);
+            		
+            		
+
+            		
+            		//os.writeObject(checkerBoard);
+            		//os.close();
+            		
+            		//sendData = outputStream.toByteArray();
+            		sendData = json.substring(0,60000).getBytes();
+            		sendData2 = json.substring(60001,120000).getBytes();
+            		sendData3 = json.substring(120001).getBytes();
+            		
             		System.out.printf ("As houses foram serializadas com %d bytes%n", sendData.length);
+            		System.out.printf ("As houses foram serializadas com %d bytes%n", sendData2.length);
+            		System.out.printf ("As houses foram serializadas com %d bytes%n", sendData3.length);
             		
 	            	DatagramPacket sendPacket = new DatagramPacket(sendData,sendData.length,InetAddress.getByName("localhost"),9999);
 	            	clientSocket.send(sendPacket);
+	            	DatagramPacket sendPacket2 = new DatagramPacket(sendData2,sendData2.length,InetAddress.getByName("localhost"),9999);
+	            	clientSocket.send(sendPacket2);
+	            	DatagramPacket sendPacket3 = new DatagramPacket(sendData3,sendData3.length,InetAddress.getByName("localhost"),9999);
+	            	clientSocket.send(sendPacket3);
 	            	
 	            	clientSocket.receive(receivePacket);
+	            	
 	            	JOptionPane.showMessageDialog(null,"Seu turno!");
                     checkerBoard.iniciarTurno();
                     
-                    receiveData = receivePacket.getData();
-                    ByteArrayInputStream in = new ByteArrayInputStream(receiveData);
-                    ObjectInputStream is = new ObjectInputStream(in);
-                    houses = (Map<Integer, CheckerHouse>) is.readObject();
-                    checkerBoard.setHouses(houses);
- 
+                    String sentence = new String(receivePacket.getData());
+                    
+                    clientSocket.receive(receivePacket);
+                    String sentence2 = new String(receivePacket.getData());
+                    
+                    clientSocket.receive(receivePacket);
+                    String sentence3 = new String(receivePacket.getData());
+                    sentence = sentence.concat(sentence2);
+                    sentence = sentence.concat(sentence3);
+                    
+                    CheckerBoard checkBoardAux = gson.fromJson(sentence,CheckerBoard.class);
+                    //houses =  checkboardAux.getHouses();
+//                    ByteArrayInputStream in = new ByteArrayInputStream(receiveData);
+//                    ObjectInputStream is = new ObjectInputStream(in);
+//                    houses = (Map<Integer, CheckerHouse>) is.readObject();
+                    checkerBoard.setHouses(checkBoardAux.getHouses());
+                    checkerBoard.repaint();
                     if(checkerBoard.blackWinner()) {
                     	if(jogador == 1)JOptionPane.showMessageDialog(null,"Parabens "+nickname+" Voce Ganhou !!!");
                     	else JOptionPane.showMessageDialog(null,"Pedras Pretas Ganhou !");

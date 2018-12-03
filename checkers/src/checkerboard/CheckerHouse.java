@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 import java.util.EventListener;
 
 import javax.swing.JPanel;
@@ -19,7 +20,7 @@ import javax.swing.JPanel;
  * @author Rafael Silva Santos
  *
  */
-public class CheckerHouse extends JPanel{
+public class CheckerHouse extends JPanel implements Serializable{
 	/**
 	 * Especificca que a casa é vazia.<br>
 	 * Não contém nenhuma pedra.
