@@ -17,18 +17,18 @@ public class ClickListener extends MouseAdapter {
 		int row = house.getRow();
 		int col = house.getCol();
 		
-		if(auxClick == 0) {
-		//if(auxClick == 0 && checkboard.getTurno()==checkboard.getPlayerColor()){ //Desativação de turno
+		//if(auxClick == 0) {
+		if(auxClick == 0 && checkboard.getTurno()==checkboard.getPlayerColor()){ //Desativação de turno
 			//System.out.println(row+" , "+col);
 			
 			if(house.getContentType() != 0) {
 				checkboard.clearSelecteds();
-				//if(house.getFgColor()==checkboard.getPlayerColor()) { //Desativacao de só mexer sua peça
+				if(house.getFgColor()==checkboard.getPlayerColor()) { //Desativacao de só mexer sua peça
 					house.setSelectionMode(1);
 					checkboard.setAnterior(house);;
 					Move moveHouse = new Move(house,checkboard);
 					auxClick = moveHouse.exibirMovimento();
-				//}
+				}
 			}else if(house.getContentType()==0 && house.getSelectionMode()==2) {
 				//if(auxClick==1) {
 					anterior = checkboard.getAnterior();
@@ -38,7 +38,7 @@ public class ClickListener extends MouseAdapter {
 					auxClick=0;
 					checkboard.clearSelecteds();
 					checkboard.verificarRainha(house.getRow(),house.getCol());
-				//	checkboard.finalizarTurno(); //Desativacao do turno
+					checkboard.finalizarTurno(); //Desativacao do turno
 				//}
 			}
 

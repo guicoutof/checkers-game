@@ -204,12 +204,12 @@ class CheckersThread extends Thread{
     public void run(){
 
         while(true){
-            byte[] receiveData = new byte[1024];
-            byte[] receiveData2 = new byte[1024];
-            byte[] receiveData3 = new byte[1024];
-            byte[] sendData = new byte[1024];
-            byte[] sendData2 = new byte[1024];
-            byte[] sendData3 = new byte[1024];
+            byte[] receiveData = new byte[60000];
+            byte[] receiveData2 = new byte[23962];
+            byte[] receiveData3 = new byte[60000];
+            byte[] sendData = new byte[62000];
+            byte[] sendData2 = new byte[62000];
+            byte[] sendData3 = new byte[62000];
             
             DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
             if(aux==2) {
@@ -218,19 +218,24 @@ class CheckersThread extends Thread{
             		Map<Integer, CheckerHouse> houses;
             		
             		clientSocket.receive(receivePacket);
-            		String sentence = new String(receivePacket.getData());
+            		receiveData = receivePacket.getData();
+            		String sentence = new String(receiveData);
             		
                     clientSocket.receive(receivePacket);
-                    String sentence2 = new String(receivePacket.getData());
-
-                    clientSocket.receive(receivePacket);
-                    String sentence3 = new String(receivePacket.getData());
-                    sentence = sentence.concat(sentence2);
-                    sentence = sentence.concat(sentence3);
+                    receiveData2 = receivePacket.getData();
+                    String sentence2 = new String(receiveData2);
+                    System.out.printf ("As houses foram deserializadas com %d bytes%n", sentence.length());
+            		System.out.printf ("As houses foram deserializadas com %d bytes%n", sentence2.length());
+//                    clientSocket.receive(receivePacket);
+//                    String sentence3 = new String(receivePacket.getData());
+                    sentence = sentence+sentence2;
+                    //sentence = sentence.concat(sentence3);
+                    System.out.printf ("Tamanho JSON %d \n",sentence.length());
                     
                     //houses = gson.fromJson(sentence,HashMap.class);
-                    CheckerBoard checkBoardAux = gson.fromJson(sentence,CheckerBoard.class);
-                    checkerBoard.setHouses(checkBoardAux.getHouses());
+                    //CheckerBoard checkBoardAux = gson.fromJson(sentence,CheckerBoard.class);
+                    houses = gson.fromJson(sentence,HashMap.class);
+                    checkerBoard.setHouses(houses);
                     checkerBoard.repaint();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -255,29 +260,29 @@ class CheckersThread extends Thread{
             		
             		Map<Integer, CheckerHouse> houses = checkerBoard.getHouses();         		
             		Gson gson = new Gson();
-            		String json = gson.toJson(checkerBoard);
+            		String json = gson.toJson(houses);
             		
             		
 
             		
             		//os.writeObject(checkerBoard);
             		//os.close();
-            		
+            		System.out.printf ("Tamanho JSON %d \n",json.length());
             		//sendData = outputStream.toByteArray();
             		sendData = json.substring(0,60000).getBytes();
-            		sendData2 = json.substring(60001,120000).getBytes();
-            		sendData3 = json.substring(120001).getBytes();
+            		sendData2 = json.substring(60001).getBytes();
+            		//sendData3 = json.substring(120001).getBytes();
             		
             		System.out.printf ("As houses foram serializadas com %d bytes%n", sendData.length);
             		System.out.printf ("As houses foram serializadas com %d bytes%n", sendData2.length);
-            		System.out.printf ("As houses foram serializadas com %d bytes%n", sendData3.length);
+            		//System.out.printf ("As houses foram serializadas com %d bytes%n", sendData3.length);
             		
 	            	DatagramPacket sendPacket = new DatagramPacket(sendData,sendData.length,InetAddress.getByName("localhost"),9999);
 	            	clientSocket.send(sendPacket);
 	            	DatagramPacket sendPacket2 = new DatagramPacket(sendData2,sendData2.length,InetAddress.getByName("localhost"),9999);
 	            	clientSocket.send(sendPacket2);
-	            	DatagramPacket sendPacket3 = new DatagramPacket(sendData3,sendData3.length,InetAddress.getByName("localhost"),9999);
-	            	clientSocket.send(sendPacket3);
+//	            	DatagramPacket sendPacket3 = new DatagramPacket(sendData3,sendData3.length,InetAddress.getByName("localhost"),9999);
+//	            	clientSocket.send(sendPacket3);
 	            	
 	            	clientSocket.receive(receivePacket);
 	            	
@@ -289,18 +294,18 @@ class CheckersThread extends Thread{
                     clientSocket.receive(receivePacket);
                     String sentence2 = new String(receivePacket.getData());
                     
-                    clientSocket.receive(receivePacket);
-                    String sentence3 = new String(receivePacket.getData());
+//                    clientSocket.receive(receivePacket);
+//                    String sentence3 = new String(receivePacket.getData());
                     sentence = sentence.concat(sentence2);
-                    sentence = sentence.concat(sentence3);
+                    //sentence = sentence.concat(sentence3);
                     
-                    CheckerBoard checkBoardAux = gson.fromJson(sentence,CheckerBoard.class);
-                    //houses =  checkboardAux.getHouses();
+                    //CheckerBoard checkBoardAux = gson.fromJson(sentence,CheckerBoard.class);
+                    houses =  gson.fromJson(sentence,HashMap.class);
 //                    ByteArrayInputStream in = new ByteArrayInputStream(receiveData);
 //                    ObjectInputStream is = new ObjectInputStream(in);
 //                    houses = (Map<Integer, CheckerHouse>) is.readObject();
-                    checkerBoard.setHouses(checkBoardAux.getHouses());
-                    checkerBoard.repaint();
+                    checkerBoard.setHouses(houses);
+                    
                     if(checkerBoard.blackWinner()) {
                     	if(jogador == 1)JOptionPane.showMessageDialog(null,"Parabens "+nickname+" Voce Ganhou !!!");
                     	else JOptionPane.showMessageDialog(null,"Pedras Pretas Ganhou !");
